@@ -1,7 +1,7 @@
 [
 {
-  "modid": "mahghuuulszenutils",
-  "name": "Mahghuuuls Zen Utils",
+  "modid": "mahzenutils",
+  "name": "Mah Zen Utils",
   "description": "Random utility zen methods.",
   "version": "${version}",
   "mcversion": "${mcversion}",

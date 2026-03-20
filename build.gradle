@@ -8,14 +8,13 @@ buildscript {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'java'
 
 version = '0.1.0'
-group = 'com.mahghuuuls.mahghuuulszenutils'
-archivesBaseName = 'mahghuuulszenutils'
-
+group = 'com.mahghuuuls.mahzenutils'
+archivesBaseName = 'mahzenutils'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
