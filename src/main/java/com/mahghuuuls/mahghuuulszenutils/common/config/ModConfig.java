@@ -7,6 +7,14 @@ import net.minecraftforge.common.config.Config;
 public class ModConfig {
 
     @Config.Name("debugCooldowns")
-    @Config.Comment({"Enables cooldown debug messages in the log."})
+    @Config.Comment({
+            "Enables cooldown debug messages in the log."
+    })
     public static boolean debugCooldowns = false;
+
+    @Config.Name("debugStacks")
+    @Config.Comment({
+            "Enables stack debug messages in the log."
+    })
+    public static boolean debugStacks = false;
 }

@@ -18,6 +18,22 @@ public final class DebugNotifier {
         MahZenUtils.LOGGER.info("[CooldownDebug] {} {}", describe(entity), message);
     }
 
+    public static void stack(EntityLivingBase entity, String message) {
+        if (!ModConfig.debugStacks || entity == null || message == null) {
+            return;
+        }
+
+        MahZenUtils.LOGGER.info("[StackDebug] {} {}", describe(entity), message);
+    }
+
+    public static void stackGlobal(String message) {
+        if (!ModConfig.debugStacks || message == null) {
+            return;
+        }
+
+        MahZenUtils.LOGGER.info("[StackDebug] {}", message);
+    }
+
     private static String describe(EntityLivingBase entity) {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;

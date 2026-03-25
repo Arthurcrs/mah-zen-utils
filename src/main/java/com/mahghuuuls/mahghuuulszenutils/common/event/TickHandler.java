@@ -1,6 +1,7 @@
 package com.mahghuuuls.mahghuuulszenutils.common.event;
 
 import com.mahghuuuls.mahghuuulszenutils.common.cooldown.CooldownService;
+import com.mahghuuuls.mahghuuulszenutils.common.stack.StackService;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -21,6 +22,7 @@ public class TickHandler {
         }
 
         CooldownService.tick(player);
+        StackService.tick(player);
     }
 
     @SubscribeEvent
@@ -36,5 +38,6 @@ public class TickHandler {
         }
 
         CooldownService.tick(entity);
+        StackService.tick(entity);
     }
 }
