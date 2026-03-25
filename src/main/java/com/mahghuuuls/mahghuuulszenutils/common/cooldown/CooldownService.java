@@ -4,6 +4,7 @@ import com.mahghuuuls.mahghuuulszenutils.common.capability.entity.EntityStatePro
 import com.mahghuuuls.mahghuuulszenutils.common.capability.entity.IEntityState;
 import com.mahghuuuls.mahghuuulszenutils.common.capability.player.IPlayerState;
 import com.mahghuuuls.mahghuuulszenutils.common.capability.player.PlayerStateProvider;
+import com.mahghuuuls.mahghuuulszenutils.common.debug.DebugNotifier;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -19,6 +20,7 @@ public final class CooldownService {
         }
 
         state.set(cooldownId, ticks);
+        DebugNotifier.cooldown(entity, "set cooldown '" + cooldownId + "' to " + ticks + " ticks");
     }
 
     public static boolean has(EntityLivingBase entity, String cooldownId) {
@@ -27,7 +29,9 @@ public final class CooldownService {
             return false;
         }
 
-        return state.has(cooldownId);
+        boolean result = state.has(cooldownId);
+        DebugNotifier.cooldown(entity, "query has cooldown '" + cooldownId + "' -> " + result);
+        return result;
     }
 
     public static int getRemaining(EntityLivingBase entity, String cooldownId) {
@@ -36,7 +40,9 @@ public final class CooldownService {
             return 0;
         }
 
-        return state.getRemaining(cooldownId);
+        int remaining = state.getRemaining(cooldownId);
+        DebugNotifier.cooldown(entity, "query remaining cooldown '" + cooldownId + "' -> " + remaining + " ticks");
+        return remaining;
     }
 
     public static void clear(EntityLivingBase entity, String cooldownId) {
@@ -45,7 +51,12 @@ public final class CooldownService {
             return;
         }
 
+        boolean existed = state.has(cooldownId);
         state.clear(cooldownId);
+
+        if (existed) {
+            DebugNotifier.cooldown(entity, "cleared cooldown '" + cooldownId + "'");
+        }
     }
 
     public static void tick(EntityLivingBase entity) {
@@ -54,7 +65,9 @@ public final class CooldownService {
             return;
         }
 
-        state.tick();
+        for (String expiredId : state.tickAndGetExpired()) {
+            DebugNotifier.cooldown(entity, "cooldown expired '" + expiredId + "'");
+        }
     }
 
     private static CooldownState getState(EntityLivingBase entity) {

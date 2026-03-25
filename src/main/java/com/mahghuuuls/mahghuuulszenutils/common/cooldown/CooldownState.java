@@ -4,8 +4,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class CooldownState {
@@ -50,9 +52,11 @@ public class CooldownState {
         return remainingTicksById.isEmpty();
     }
 
-    public void tick() {
+    public List<String> tickAndGetExpired() {
+        List<String> expired = new ArrayList<>();
+
         if (remainingTicksById.isEmpty()) {
-            return;
+            return expired;
         }
 
         Iterator<Map.Entry<String, Integer>> it = remainingTicksById.entrySet().iterator();
@@ -61,11 +65,14 @@ public class CooldownState {
             int next = entry.getValue() - 1;
 
             if (next <= 0) {
+                expired.add(entry.getKey());
                 it.remove();
             } else {
                 entry.setValue(next);
             }
         }
+
+        return expired;
     }
 
     public NBTTagCompound serializeNBT() {
