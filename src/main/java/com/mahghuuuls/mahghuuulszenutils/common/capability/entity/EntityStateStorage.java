@@ -12,6 +12,7 @@ public class EntityStateStorage implements Capability.IStorage<IEntityState> {
         if (instance instanceof EntityState) {
             return ((EntityState) instance).serializeNBT();
         }
+
         return new NBTTagCompound();
     }
 

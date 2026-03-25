@@ -1,9 +1,6 @@
 package com.mahghuuuls.mahghuuulszenutils.common.event;
 
-import com.mahghuuuls.mahghuuulszenutils.common.capability.entity.EntityStateProvider;
-import com.mahghuuuls.mahghuuulszenutils.common.capability.player.IPlayerState;
-import com.mahghuuuls.mahghuuulszenutils.common.capability.player.PlayerStateProvider;
-import com.mahghuuuls.mahghuuulszenutils.common.capability.entity.IEntityState;
+import com.mahghuuuls.mahghuuulszenutils.common.cooldown.CooldownService;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -19,21 +16,11 @@ public class TickHandler {
         }
 
         EntityPlayer player = event.player;
-
         if (player.world.isRemote) {
             return;
         }
 
-        IPlayerState state = player.getCapability(PlayerStateProvider.CAPABILITY, null);
-        if (state == null) {
-            return;
-        }
-
-        if (state.getCooldownState().isEmpty()) {
-            return;
-        }
-
-        state.getCooldownState().tick();
+        CooldownService.tick(player);
     }
 
     @SubscribeEvent
@@ -48,15 +35,6 @@ public class TickHandler {
             return;
         }
 
-        IEntityState state = entity.getCapability(EntityStateProvider.CAPABILITY, null);
-        if (state == null) {
-            return;
-        }
-
-        if (state.getCooldownState().isEmpty()) {
-            return;
-        }
-
-        state.getCooldownState().tick();
+        CooldownService.tick(entity);
     }
 }

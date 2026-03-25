@@ -4,6 +4,7 @@ import com.mahghuuuls.mahghuuulszenutils.common.cooldown.CooldownState;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class PlayerState implements IPlayerState {
+
     private final CooldownState cooldownState = new CooldownState();
 
     @Override
@@ -18,16 +19,20 @@ public class PlayerState implements IPlayerState {
     }
 
     public void deserializeNBT(NBTTagCompound tag) {
-        if (tag != null && tag.hasKey("CooldownState")) {
+        if (tag == null) {
+            return;
+        }
+
+        if (tag.hasKey("CooldownState")) {
             cooldownState.deserializeNBT(tag.getCompoundTag("CooldownState"));
         }
     }
 
-    public void copyPersistentDataFrom(PlayerState other) {
-        this.cooldownState.copyFrom(other.cooldownState);
-    }
-
     public void copyCooldownsFrom(PlayerState other) {
+        if (other == null) {
+            return;
+        }
+
         this.cooldownState.copyFrom(other.cooldownState);
     }
 }

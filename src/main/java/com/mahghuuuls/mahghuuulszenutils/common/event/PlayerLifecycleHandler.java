@@ -13,17 +13,10 @@ public class PlayerLifecycleHandler {
         IPlayerState original = event.getOriginal().getCapability(PlayerStateProvider.CAPABILITY, null);
         IPlayerState clone = event.getEntityPlayer().getCapability(PlayerStateProvider.CAPABILITY, null);
 
-        if (original == null || clone == null) {
-            return;
-        }
-
         if (!(original instanceof PlayerState) || !(clone instanceof PlayerState)) {
             return;
         }
 
-        PlayerState originalState = (PlayerState) original;
-        PlayerState cloneState = (PlayerState) clone;
-
-        cloneState.copyCooldownsFrom(originalState);
+        ((PlayerState) clone).copyCooldownsFrom((PlayerState) original);
     }
 }

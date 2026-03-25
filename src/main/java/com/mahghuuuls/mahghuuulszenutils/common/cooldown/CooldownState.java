@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class CooldownState {
+
     private final Map<String, Integer> remainingTicksById = new HashMap<>();
 
     public boolean has(String id) {
@@ -37,6 +38,7 @@ public class CooldownState {
         if (id == null || id.isEmpty()) {
             return;
         }
+
         remainingTicksById.remove(id);
     }
 
@@ -57,6 +59,7 @@ public class CooldownState {
         while (it.hasNext()) {
             Map.Entry<String, Integer> entry = it.next();
             int next = entry.getValue() - 1;
+
             if (next <= 0) {
                 it.remove();
             } else {
@@ -104,6 +107,10 @@ public class CooldownState {
     }
 
     public void copyFrom(CooldownState other) {
+        if (other == null) {
+            return;
+        }
+
         this.remainingTicksById.clear();
         this.remainingTicksById.putAll(other.remainingTicksById);
     }

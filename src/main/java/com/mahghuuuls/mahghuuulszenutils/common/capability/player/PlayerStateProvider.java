@@ -11,6 +11,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import javax.annotation.Nullable;
 
 public class PlayerStateProvider implements ICapabilitySerializable<NBTTagCompound> {
+
     public static final ResourceLocation NAME =
             new ResourceLocation(MahZenUtils.MOD_ID, "player_state");
 
@@ -21,11 +22,16 @@ public class PlayerStateProvider implements ICapabilitySerializable<NBTTagCompou
 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CAPABILITY;
+        return CAPABILITY != null && capability == CAPABILITY;
     }
 
     @Override
+    @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        if (CAPABILITY == null) {
+            return null;
+        }
+
         return capability == CAPABILITY ? CAPABILITY.cast(instance) : null;
     }
 
@@ -34,6 +40,7 @@ public class PlayerStateProvider implements ICapabilitySerializable<NBTTagCompou
         if (CAPABILITY == null) {
             return new NBTTagCompound();
         }
+
         return (NBTTagCompound) CAPABILITY.getStorage().writeNBT(CAPABILITY, instance, null);
     }
 
@@ -42,6 +49,7 @@ public class PlayerStateProvider implements ICapabilitySerializable<NBTTagCompou
         if (CAPABILITY == null) {
             return;
         }
+
         CAPABILITY.getStorage().readNBT(CAPABILITY, instance, null, nbt);
     }
 }
