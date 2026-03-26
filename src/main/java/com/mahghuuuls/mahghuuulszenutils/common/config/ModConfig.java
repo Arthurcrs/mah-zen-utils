@@ -17,4 +17,10 @@ public class ModConfig {
             "Enables stack debug messages in the log."
     })
     public static boolean debugStacks = false;
+
+    @Config.Name("debugMarkers")
+    @Config.Comment({
+            "Enables marker debug messages in chat and log."
+    })
+    public static boolean debugMarkers = false;
 }

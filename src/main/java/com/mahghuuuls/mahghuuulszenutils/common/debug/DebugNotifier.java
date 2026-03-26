@@ -4,6 +4,7 @@ import com.mahghuuuls.mahghuuulszenutils.MahZenUtils;
 import com.mahghuuuls.mahghuuulszenutils.common.config.ModConfig;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.TextComponentString;
 
 public final class DebugNotifier {
 
@@ -32,6 +33,15 @@ public final class DebugNotifier {
         }
 
         MahZenUtils.LOGGER.info("[StackDebug] {}", message);
+    }
+
+    public static void marker(EntityPlayer owner, String message) {
+        if (!ModConfig.debugMarkers || owner == null || message == null) {
+            return;
+        }
+
+        owner.sendMessage(new TextComponentString("[MarkerDebug] " + message));
+        MahZenUtils.LOGGER.info("[MarkerDebug] [Player:{}] {}", owner.getName(), message);
     }
 
     private static String describe(EntityLivingBase entity) {

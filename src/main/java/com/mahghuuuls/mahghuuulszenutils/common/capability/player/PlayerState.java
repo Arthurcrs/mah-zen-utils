@@ -1,6 +1,7 @@
 package com.mahghuuuls.mahghuuulszenutils.common.capability.player;
 
 import com.mahghuuuls.mahghuuulszenutils.common.cooldown.CooldownState;
+import com.mahghuuuls.mahghuuulszenutils.common.marker.MarkerState;
 import com.mahghuuuls.mahghuuulszenutils.common.stack.StackState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
@@ -9,6 +10,7 @@ public class PlayerState implements IPlayerState {
 
     private final CooldownState cooldownState = new CooldownState();
     private final StackState stackState = new StackState();
+    private final MarkerState markerState = new MarkerState();
 
     @Override
     public CooldownState getCooldownState() {
@@ -20,10 +22,16 @@ public class PlayerState implements IPlayerState {
         return stackState;
     }
 
+    @Override
+    public MarkerState getMarkerState() {
+        return markerState;
+    }
+
     public NBTTagCompound serializeNBT() {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setTag("CooldownState", cooldownState.serializeNBT());
         tag.setTag("StackState", stackState.serializeNBT());
+        tag.setTag("MarkerState", markerState.serializeNBT());
         return tag;
     }
 
@@ -38,6 +46,10 @@ public class PlayerState implements IPlayerState {
 
         if (tag.hasKey("StackState", Constants.NBT.TAG_COMPOUND)) {
             stackState.deserializeNBT(tag.getCompoundTag("StackState"));
+        }
+
+        if (tag.hasKey("MarkerState", Constants.NBT.TAG_COMPOUND)) {
+            markerState.deserializeNBT(tag.getCompoundTag("MarkerState"));
         }
     }
 
