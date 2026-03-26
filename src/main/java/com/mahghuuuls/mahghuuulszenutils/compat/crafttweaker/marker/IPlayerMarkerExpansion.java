@@ -1,9 +1,11 @@
 package com.mahghuuuls.mahghuuulszenutils.compat.crafttweaker.marker;
 
+import com.mahghuuuls.mahghuuulszenutils.common.log.RuntimeLog;
 import com.mahghuuuls.mahghuuulszenutils.common.marker.MarkerRule;
 import com.mahghuuuls.mahghuuulszenutils.common.marker.MarkerService;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.entity.IEntity;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.player.IPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,6 +44,7 @@ public class IPlayerMarkerExpansion {
         MarkerRule resolvedRule = MarkerRule.fromZen(rule);
 
         if (resolvedRule == null) {
+            RuntimeLog.invalidMarkerRule(rule);
             return;
         }
 
@@ -55,7 +58,7 @@ public class IPlayerMarkerExpansion {
         List<IEntity> converted = new ArrayList<>();
 
         for (Entity entity : marked) {
-            IEntity wrapped = crafttweaker.api.minecraft.CraftTweakerMC.getIEntity(entity);
+            IEntity wrapped = CraftTweakerMC.getIEntity(entity);
             if (wrapped != null) {
                 converted.add(wrapped);
             }

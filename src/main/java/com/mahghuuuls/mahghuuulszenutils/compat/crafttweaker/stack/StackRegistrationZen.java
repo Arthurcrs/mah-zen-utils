@@ -1,5 +1,6 @@
 package com.mahghuuuls.mahghuuulszenutils.compat.crafttweaker.stack;
 
+import com.mahghuuuls.mahghuuulszenutils.common.log.RuntimeLog;
 import com.mahghuuuls.mahghuuulszenutils.common.stack.StackExpirationRule;
 import com.mahghuuuls.mahghuuulszenutils.common.stack.StackRefreshRule;
 import com.mahghuuuls.mahghuuulszenutils.common.stack.StackService;
@@ -20,7 +21,13 @@ public class StackRegistrationZen {
         StackExpirationRule expiration = StackExpirationRule.fromZen(expirationRule);
         StackRefreshRule refresh = StackRefreshRule.fromZen(refreshRule);
 
-        if (expiration == null || refresh == null) {
+        if (expiration == null) {
+            RuntimeLog.invalidStackRule("expiration", expirationRule);
+            return false;
+        }
+
+        if (refresh == null) {
+            RuntimeLog.invalidStackRule("refresh", refreshRule);
             return false;
         }
 

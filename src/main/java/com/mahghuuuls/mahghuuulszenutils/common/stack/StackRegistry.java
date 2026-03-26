@@ -31,7 +31,7 @@ public final class StackRegistry {
     }
 
     public static StackDefinition get(String stackId) {
-        if (stackId == null || stackId.isEmpty()) {
+        if (stackId == null) {
             return null;
         }
 

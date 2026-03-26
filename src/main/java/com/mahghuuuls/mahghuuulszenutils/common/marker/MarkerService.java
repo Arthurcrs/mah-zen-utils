@@ -18,7 +18,7 @@ public final class MarkerService {
     }
 
     public static void markEntity(EntityPlayer owner, String markId, Entity target, int duration, MarkerRule rule) {
-        if (owner == null || markId == null || markId.isEmpty() || target == null || rule == null) {
+        if (owner == null || markId == null || target == null || rule == null) {
             return;
         }
 
@@ -127,7 +127,7 @@ public final class MarkerService {
     }
 
     public static void clearMarks(EntityPlayer owner, String markId) {
-        if (owner == null || markId == null || markId.isEmpty()) {
+        if (owner == null || markId == null) {
             return;
         }
 
@@ -143,7 +143,7 @@ public final class MarkerService {
     }
 
     public static void unmarkEntity(EntityPlayer owner, String markId, Entity target) {
-        if (owner == null || markId == null || markId.isEmpty() || target == null) {
+        if (owner == null || markId == null || target == null) {
             return;
         }
 
@@ -160,7 +160,7 @@ public final class MarkerService {
     }
 
     public static boolean isMarked(EntityPlayer owner, String markId, Entity target) {
-        if (owner == null || markId == null || markId.isEmpty() || target == null) {
+        if (owner == null || markId == null || target == null) {
             return false;
         }
 
@@ -187,7 +187,7 @@ public final class MarkerService {
     }
 
     public static int getRemainingMarkTime(EntityPlayer owner, String markId, Entity target) {
-        if (owner == null || markId == null || markId.isEmpty() || target == null) {
+        if (owner == null || markId == null || target == null) {
             return 0;
         }
 

@@ -5,6 +5,7 @@ import com.mahghuuuls.mahghuuulszenutils.common.capability.entity.IEntityState;
 import com.mahghuuuls.mahghuuulszenutils.common.capability.player.IPlayerState;
 import com.mahghuuuls.mahghuuulszenutils.common.capability.player.PlayerStateProvider;
 import com.mahghuuuls.mahghuuulszenutils.common.debug.DebugNotifier;
+import com.mahghuuuls.mahghuuulszenutils.common.log.RuntimeLog;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -26,16 +27,23 @@ public final class StackService {
                 refreshRule
         );
 
-        boolean registered = StackRegistry.register(definition);
-        if (registered) {
-            DebugNotifier.stackGlobal("registered stack '" + stackId + "'"
-                    + " max=" + maxStacks
-                    + " duration=" + defaultDuration
-                    + " expiration=" + expirationRule
-                    + " refresh=" + refreshRule);
+        if (!definition.isValid()) {
+            RuntimeLog.invalidStackRegistration(stackId, maxStacks, defaultDuration, expirationRule, refreshRule);
+            return false;
         }
 
-        return registered;
+        boolean registered = StackRegistry.register(definition);
+        if (!registered) {
+            RuntimeLog.duplicateStackRegistration(stackId);
+            return false;
+        }
+
+        DebugNotifier.stackGlobal("registered stack '" + stackId + "'"
+                + " max=" + maxStacks
+                + " duration=" + defaultDuration
+                + " expiration=" + expirationRule
+                + " refresh=" + refreshRule);
+        return true;
     }
 
     public static boolean isRegistered(String stackId) {
@@ -44,7 +52,8 @@ public final class StackService {
 
     public static int getStacks(EntityLivingBase entity, String stackId) {
         StackState state = getState(entity);
-        if (state == null || stackId == null || stackId.isEmpty()) {
+        StackDefinition definition = requireDefinition(stackId, "getStacks");
+        if (state == null || definition == null) {
             return 0;
         }
 
@@ -53,7 +62,8 @@ public final class StackService {
 
     public static int getRemainingStackTime(EntityLivingBase entity, String stackId) {
         StackState state = getState(entity);
-        if (state == null || stackId == null || stackId.isEmpty()) {
+        StackDefinition definition = requireDefinition(stackId, "getRemainingStackTime");
+        if (state == null || definition == null) {
             return 0;
         }
 
@@ -62,11 +72,8 @@ public final class StackService {
 
     public static void clearStacks(EntityLivingBase entity, String stackId) {
         StackState state = getState(entity);
-        if (state == null || stackId == null || stackId.isEmpty()) {
-            return;
-        }
-
-        if (!StackRegistry.isRegistered(stackId)) {
+        StackDefinition definition = requireDefinition(stackId, "clearStacks");
+        if (state == null || definition == null) {
             return;
         }
 
@@ -80,8 +87,7 @@ public final class StackService {
 
     public static void setStackCount(EntityLivingBase entity, String stackId, int count) {
         StackState state = getState(entity);
-        StackDefinition definition = StackRegistry.get(stackId);
-
+        StackDefinition definition = requireDefinition(stackId, "setStackCount");
         if (state == null || definition == null) {
             return;
         }
@@ -109,8 +115,7 @@ public final class StackService {
 
     public static void setStackTime(EntityLivingBase entity, String stackId, int ticks) {
         StackState state = getState(entity);
-        StackDefinition definition = StackRegistry.get(stackId);
-
+        StackDefinition definition = requireDefinition(stackId, "setStackTime");
         if (state == null || definition == null) {
             return;
         }
@@ -150,11 +155,7 @@ public final class StackService {
 
         for (String stackId : state.view().keySet().toArray(new String[0])) {
             StackDefinition definition = StackRegistry.get(stackId);
-            if (definition == null) {
-                continue;
-            }
-
-            if (!definition.isTimed()) {
+            if (definition == null || !definition.isTimed()) {
                 continue;
             }
 
@@ -176,9 +177,8 @@ public final class StackService {
 
     private static void applySignedDelta(EntityLivingBase entity, String stackId, int delta, String source) {
         StackState state = getState(entity);
-        StackDefinition definition = StackRegistry.get(stackId);
-
-        if (state == null || definition == null || stackId == null || stackId.isEmpty() || delta == 0) {
+        StackDefinition definition = requireDefinition(stackId, source);
+        if (state == null || definition == null || delta == 0) {
             return;
         }
 
@@ -258,11 +258,9 @@ public final class StackService {
             case RESET:
                 instance.setRemainingTicks(defaultDuration);
                 break;
-
             case ADD:
                 instance.setRemainingTicks(current + defaultDuration);
                 break;
-
             case PRESERVE:
                 if (current <= 0) {
                     instance.setRemainingTicks(defaultDuration);
@@ -281,7 +279,6 @@ public final class StackService {
                 state.remove(stackId);
                 DebugNotifier.stack(entity, "stack expired '" + stackId + "' -> clear_all");
                 break;
-
             case DECAY_ONE:
                 int nextCount = instance.getCount() - 1;
                 if (nextCount <= 0) {
@@ -295,11 +292,22 @@ public final class StackService {
                                     + ", reset time=" + definition.getDefaultDuration());
                 }
                 break;
-
             case PERMANENT:
                 instance.setRemainingTicks(0);
                 break;
         }
+    }
+
+    private static StackDefinition requireDefinition(String stackId, String operation) {
+        if (stackId == null) {
+            return null;
+        }
+
+        StackDefinition definition = StackRegistry.get(stackId);
+        if (definition == null) {
+            RuntimeLog.unregisteredStack(operation, stackId);
+        }
+        return definition;
     }
 
     private static StackState getState(EntityLivingBase entity) {

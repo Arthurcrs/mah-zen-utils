@@ -15,7 +15,7 @@ public final class CooldownService {
 
     public static void set(EntityLivingBase entity, String cooldownId, int ticks) {
         CooldownState state = getState(entity);
-        if (state == null || cooldownId == null || cooldownId.isEmpty()) {
+        if (state == null || cooldownId == null) {
             return;
         }
 
@@ -25,7 +25,7 @@ public final class CooldownService {
 
     public static boolean has(EntityLivingBase entity, String cooldownId) {
         CooldownState state = getState(entity);
-        if (state == null || cooldownId == null || cooldownId.isEmpty()) {
+        if (state == null || cooldownId == null) {
             return false;
         }
 
@@ -36,7 +36,7 @@ public final class CooldownService {
 
     public static int getRemaining(EntityLivingBase entity, String cooldownId) {
         CooldownState state = getState(entity);
-        if (state == null || cooldownId == null || cooldownId.isEmpty()) {
+        if (state == null || cooldownId == null) {
             return 0;
         }
 
@@ -47,7 +47,7 @@ public final class CooldownService {
 
     public static void clear(EntityLivingBase entity, String cooldownId) {
         CooldownState state = getState(entity);
-        if (state == null || cooldownId == null || cooldownId.isEmpty()) {
+        if (state == null || cooldownId == null) {
             return;
         }
 
