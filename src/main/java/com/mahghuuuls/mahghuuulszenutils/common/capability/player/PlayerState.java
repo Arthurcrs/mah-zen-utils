@@ -60,4 +60,20 @@ public class PlayerState implements IPlayerState {
 
         this.cooldownState.copyFrom(other.cooldownState);
     }
+
+    public void copyStacksFrom(PlayerState other) {
+        if (other == null) {
+            return;
+        }
+
+        this.stackState.copyFrom(other.stackState);
+    }
+
+    public void copyMarkersFrom(PlayerState other) {
+        if (other == null) {
+            return;
+        }
+
+        this.markerState.copyFrom(other.markerState);
+    }
 }

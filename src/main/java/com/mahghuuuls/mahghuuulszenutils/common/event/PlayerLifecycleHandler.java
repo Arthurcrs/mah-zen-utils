@@ -17,6 +17,13 @@ public class PlayerLifecycleHandler {
             return;
         }
 
+        // Cooldowns always persist through both death and dimension changes
         ((PlayerState) clone).copyCooldownsFrom((PlayerState) original);
+
+        // Stacks and Markers clear on death, but persist through dimension changes
+        if (!event.isWasDeath()) {
+            ((PlayerState) clone).copyStacksFrom((PlayerState) original);
+            ((PlayerState) clone).copyMarkersFrom((PlayerState) original);
+        }
     }
 }

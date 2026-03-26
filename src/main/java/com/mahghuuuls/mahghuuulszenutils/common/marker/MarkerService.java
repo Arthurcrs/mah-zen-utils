@@ -5,6 +5,7 @@ import com.mahghuuuls.mahghuuulszenutils.common.capability.player.PlayerStatePro
 import com.mahghuuuls.mahghuuulszenutils.common.debug.DebugNotifier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -287,6 +288,12 @@ public final class MarkerService {
             return null;
         }
 
+        // Fast O(1) UUID lookup on the server side
+        if (!owner.world.isRemote && owner.world instanceof WorldServer) {
+            return ((WorldServer) owner.world).getEntityFromUuid(targetId);
+        }
+
+        // Slower fallback for the client side
         for (Entity entity : owner.world.loadedEntityList) {
             if (entity != null && targetId.equals(entity.getUniqueID())) {
                 return entity;
