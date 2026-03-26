@@ -1,6 +1,5 @@
 package com.mahghuuuls.mahghuuulszenutils.common.marker;
 
-import com.mahghuuuls.mahghuuulszenutils.MahZenUtils;
 import com.mahghuuuls.mahghuuulszenutils.common.capability.player.IPlayerState;
 import com.mahghuuuls.mahghuuulszenutils.common.capability.player.PlayerStateProvider;
 import com.mahghuuuls.mahghuuulszenutils.common.debug.DebugNotifier;
@@ -29,31 +28,29 @@ public final class MarkerService {
 
         UUID targetId = target.getUniqueID();
         int normalizedDuration = Math.max(0, duration);
-
         MarkerEntry existing = state.getEntry(markId, targetId);
 
         switch (rule) {
-            case RESET: {
+            case RESET:
                 if (normalizedDuration <= 0) {
                     state.remove(markId, targetId);
                     DebugNotifier.marker(owner, "mark '" + markId + "' on " + describeTarget(target) + " removed by reset(0)");
                     return;
                 }
 
-                MarkerEntry entry = state.getOrCreateEntry(markId, targetId);
-                entry.setRemainingTicks(normalizedDuration);
+                MarkerEntry resetEntry = state.getOrCreateEntry(markId, targetId);
+                resetEntry.setRemainingTicks(normalizedDuration);
                 DebugNotifier.marker(owner, "mark '" + markId + "' on " + describeTarget(target) + " set to " + normalizedDuration + " ticks [reset]");
                 return;
-            }
 
-            case ADD: {
+            case ADD:
                 if (existing == null) {
                     if (normalizedDuration <= 0) {
                         return;
                     }
 
-                    MarkerEntry entry = state.getOrCreateEntry(markId, targetId);
-                    entry.setRemainingTicks(normalizedDuration);
+                    MarkerEntry addEntry = state.getOrCreateEntry(markId, targetId);
+                    addEntry.setRemainingTicks(normalizedDuration);
                     DebugNotifier.marker(owner, "mark '" + markId + "' on " + describeTarget(target) + " created with " + normalizedDuration + " ticks [add]");
                     return;
                 }
@@ -68,9 +65,8 @@ public final class MarkerService {
                 existing.setRemainingTicks(next);
                 DebugNotifier.marker(owner, "mark '" + markId + "' on " + describeTarget(target) + " adjusted to " + next + " ticks [add]");
                 return;
-            }
 
-            case PRESERVE: {
+            case PRESERVE:
                 if (existing != null) {
                     DebugNotifier.marker(owner, "mark '" + markId + "' on " + describeTarget(target) + " preserved at " + existing.getRemainingTicks() + " ticks");
                     return;
@@ -80,17 +76,16 @@ public final class MarkerService {
                     return;
                 }
 
-                MarkerEntry entry = state.getOrCreateEntry(markId, targetId);
-                entry.setRemainingTicks(normalizedDuration);
+                MarkerEntry preserveEntry = state.getOrCreateEntry(markId, targetId);
+                preserveEntry.setRemainingTicks(normalizedDuration);
                 DebugNotifier.marker(owner, "mark '" + markId + "' on " + describeTarget(target) + " created with " + normalizedDuration + " ticks [preserve]");
-            }
         }
     }
 
     public static List<Entity> getMarkedEntities(EntityPlayer owner, String markId) {
         List<Entity> result = new ArrayList<>();
 
-        if (owner == null || markId == null || markId.isEmpty()) {
+        if (owner == null || markId == null) {
             return result;
         }
 
@@ -171,6 +166,7 @@ public final class MarkerService {
 
         UUID targetId = target.getUniqueID();
         MarkerEntry entry = state.getEntry(markId, targetId);
+
         if (entry == null || entry.isExpired()) {
             if (entry != null) {
                 state.remove(markId, targetId);
@@ -198,6 +194,7 @@ public final class MarkerService {
 
         UUID targetId = target.getUniqueID();
         MarkerEntry entry = state.getEntry(markId, targetId);
+
         if (entry == null || entry.isExpired()) {
             if (entry != null) {
                 state.remove(markId, targetId);
@@ -305,7 +302,7 @@ public final class MarkerService {
 
     private static String describeTarget(Entity target) {
         if (target == null) {
-            return "<null>";
+            return "";
         }
 
         return target.getName() + "/" + target.getUniqueID();
