@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         maven { url 'https://maven.minecraftforge.net' }
+        mavenCentral()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -21,27 +22,38 @@ targetCompatibility = 1.8
 minecraft {
     version  = '1.12.2-14.23.5.2847'
     mappings = 'snapshot_20171003'
-    runDir   = 'run' 
+    runDir   = 'run'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+    maven { url 'https://maven.blamejared.com' }
     maven { url 'https://cursemaven.com' }
-    maven { url 'https://maven.blamejared.com' } 
 }
 
 dependencies {
-	// CraftTweaker 1.12.2
     deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.709"
 }
 
-// Manifest
-jar {
-    manifest {
-        attributes(
-            'Implementation-Title': archivesBaseName,
-            'Implementation-Version': version
-        )
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", "1.12.2"
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': '1.12.2'
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
 }
 
+jar {
+    manifest {
+        attributes(
+                'Implementation-Title': archivesBaseName,
+                'Implementation-Version': version
+        )
+    }
+}
