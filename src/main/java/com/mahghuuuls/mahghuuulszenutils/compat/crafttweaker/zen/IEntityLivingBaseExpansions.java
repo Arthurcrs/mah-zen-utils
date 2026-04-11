@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EntityDamageSource;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -20,7 +21,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class IEntityLivingBaseExpansions {
 
     @ZenMethod
-    public static IPlayer asIPlayer(IEntity iEntity) {
+    public static IPlayer asIPlayer(IEntityLivingBase iEntity) {
         Entity entity = CraftTweakerMC.getEntity(iEntity);
 
         if (entity instanceof EntityPlayerMP) {
@@ -85,5 +86,16 @@ public class IEntityLivingBaseExpansions {
         }
 
         return mcEntity.getHealth() / maxHealth;
+    }
+
+    @ZenMethod
+    public static void dealCustomDamage(IEntityLivingBase target, IEntity attacker, float amount, String customDamageType) {
+        if (target == null || attacker == null) return;
+
+        EntityLivingBase mcTarget = (EntityLivingBase) target.getInternal();
+        Entity mcAttacker = (Entity) attacker.getInternal();
+        EntityDamageSource source = new EntityDamageSource(customDamageType, mcAttacker);
+
+        mcTarget.attackEntityFrom(source, amount);
     }
 }
