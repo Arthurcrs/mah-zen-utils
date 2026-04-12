@@ -9,12 +9,16 @@ import crafttweaker.api.player.IPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenMethod;
+
+import java.util.List;
 
 @ZenRegister
 @ZenExpansion("crafttweaker.entity.IEntityLivingBase")
@@ -97,5 +101,30 @@ public class IEntityLivingBaseExpansions {
         EntityDamageSource source = new EntityDamageSource(customDamageType, mcAttacker);
 
         mcTarget.attackEntityFrom(source, amount);
+    }
+
+    @ZenMethod
+    public static boolean isBlocking(IEntityLivingBase entity) {
+        if (entity == null || entity.getInternal() == null) return false;
+        EntityLivingBase mcEntity = (EntityLivingBase) entity.getInternal();
+
+        return mcEntity.isActiveItemStackBlocking();
+    }
+
+    @ZenMethod
+    public static IPlayer[] getNearbyPlayers(IEntityLivingBase entity, double radius) {
+        if (entity == null || entity.getInternal() == null) return new IPlayer[0];
+        EntityLivingBase mcEntity = (EntityLivingBase) entity.getInternal();
+
+        // Create a bounding box around the entity expanded by the radius
+        AxisAlignedBB boundingBox = mcEntity.getEntityBoundingBox().grow(radius, radius, radius);
+        List<EntityPlayer> mcPlayers = mcEntity.world.getEntitiesWithinAABB(EntityPlayer.class, boundingBox);
+
+        IPlayer[] ctPlayers = new IPlayer[mcPlayers.size()];
+        for (int i = 0; i < mcPlayers.size(); i++) {
+            ctPlayers[i] = CraftTweakerMC.getIPlayer(mcPlayers.get(i));
+        }
+
+        return ctPlayers;
     }
 }
