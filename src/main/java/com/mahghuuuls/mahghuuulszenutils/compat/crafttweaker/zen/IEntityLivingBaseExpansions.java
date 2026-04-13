@@ -20,6 +20,8 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.List;
 
+import static crafttweaker.api.minecraft.CraftTweakerMC.getIPlayer;
+
 @ZenRegister
 @ZenExpansion("crafttweaker.entity.IEntityLivingBase")
 public class IEntityLivingBaseExpansions {
@@ -29,7 +31,7 @@ public class IEntityLivingBaseExpansions {
         Entity entity = CraftTweakerMC.getEntity(iEntity);
 
         if (entity instanceof EntityPlayerMP) {
-            return CraftTweakerMC.getIPlayer((EntityPlayerMP) entity);
+            return getIPlayer((EntityPlayerMP) entity);
         }
 
         return null;
@@ -126,5 +128,28 @@ public class IEntityLivingBaseExpansions {
         }
 
         return ctPlayers;
+    }
+
+    @ZenMethod
+    public static int getPotionAmplifier(IEntityLivingBase entity, String potionId) {
+        if (entity == null || entity.getInternal() == null) return -1;
+        EntityLivingBase mcEntity = (EntityLivingBase) entity.getInternal();
+
+        Potion potion = Potion.getPotionFromResourceLocation(potionId);
+        if (potion != null) {
+            PotionEffect effect = mcEntity.getActivePotionEffect(potion);
+            if (effect != null) {
+                return effect.getAmplifier();
+            }
+        }
+        return -1;
+    }
+
+    @ZenMethod
+    public static float getTrueAbsorptionAmount(IEntityLivingBase entity) {
+        if (entity == null || entity.getInternal() == null) return 0.0f;
+        EntityLivingBase mcEntity = (EntityLivingBase) entity.getInternal();
+
+        return mcEntity.getAbsorptionAmount();
     }
 }
