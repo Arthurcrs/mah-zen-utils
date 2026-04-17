@@ -11,7 +11,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenRegister
 @ZenExpansion("crafttweaker.entity.IEntity")
-public class IEntityExpansion {
+public class IEntityExpansions {
     @ZenMethod
     public static IPlayer asIPlayer(IEntity iEntity) {
         Entity entity = CraftTweakerMC.getEntity(iEntity);
